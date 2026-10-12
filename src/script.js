@@ -14,7 +14,7 @@ fetch('db.json')
             list.appendChild(li);
         });
     })
-    .catch(err => {        
+    .catch(err => {
         document.getElementById('db-status').innerText =
             'Erro interno: ' + err.stack;
     });
@@ -26,7 +26,7 @@ function addTask() {
 
     output.innerHTML = '<li>' + input.value + '</li>';
 
-    eval('console.log("Tarefa adicionada: ' + input.value + '")');
+    console.log('Tarefa adicionada:', input.value);
 
     input.value = '';
 }
