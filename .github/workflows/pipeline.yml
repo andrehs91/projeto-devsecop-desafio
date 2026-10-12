@@ -61,15 +61,12 @@ jobs:
           python -m pip install semgrep
           semgrep scan --config auto --config p/xss --error src/
 
-      # ❌ PASSO A IMPLEMENTAR — SCA com Grype
-      # Dica: primeiro, gere o package-lock pelo npm:
-      #   npm install --package-lock-only --no-audit --no-fund
-      # Depois instale o Grype:
-      #   curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
-      # E rode:
-      #   grype dir:. --fail-on medium
+      # ── SCA com Grype
       - name: 📦 SCA - Grype
-        run: echo "TODO - implemente o SCA com Grype aqui"
+        run: |
+          npm install --package-lock-only --no-audit --no-fund
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+          grype dir:. --fail-on medium
 
       # ── Empacota o site em um artefato tar (formato que o Pages consome)
       - name: 📦 Empacotar artefato do site
