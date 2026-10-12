@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🔑 Secrets Scanning
+      - name: 🔑 Secrets Scanning - Gitleaks
         uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,11 +56,10 @@ jobs:
           ls src/
           echo "Build OK!"
 
-      # ❌ PASSO A IMPLEMENTAR — SAST com Semgrep
-      # Dica: instale com "pip install semgrep" e rode
-      #   semgrep scan --config auto --config p/xss --error src/
       - name: 🔍 SAST - Semgrep
-        run: echo "TODO - implemente o SAST com Semgrep aqui"
+        run: |
+          python -m pip install semgrep
+          semgrep scan --config auto --config p/xss --error src/
 
       # ❌ PASSO A IMPLEMENTAR — SCA com Grype
       # Dica: primeiro, gere o package-lock pelo npm:
