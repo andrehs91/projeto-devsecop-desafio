@@ -17,6 +17,7 @@ jobs:
   build:
     name: Build, Segurança e Assinatura
     runs-on: ubuntu-latest
+    environment: github-pages
 
     steps:
       - name: 📥 Checkout do Código
@@ -29,19 +30,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ⚠️ Assim que remover segredos do código, passar pra cá
-      # Obs: não é uma alternativa tão robusta quanto um Vault por exemplo, mas já que o segredo estava em código....
-      # Dicas para cada variável:
-      #   - adicione um env 
-      #   - crie um segredo correspondente no github
-      #   - insira uma referência para encontrá-la no código (exemplo CHAVE = "__CHAVE__")
-      #   - injete a variável na referência, usando um sed 
       - name: 🔐 Inserir Secrets no JavaScript
-        #env:
-          #VAR: ${{ secrets.VAR  }}
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo "Nenhum segredo inserido no código por enquanto"
-      #   sed -i "s|__VAR__|$VAR|g" src/script.js
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          script = Path("src/script.js")
+          contents = script.read_text(encoding="utf-8")
+          for name in ("API_KEY", "DB_PASSWORD"):
+              placeholder = f"__{name}__"
+              if placeholder not in contents:
+                  raise SystemExit(f"Placeholder {placeholder} ausente em {script}")
+              contents = contents.replace(placeholder, json.dumps(os.environ[name]))
+          script.write_text(contents, encoding="utf-8")
+          PY
 
       - name: ⚙️ Build
         run: |
